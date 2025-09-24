@@ -17,7 +17,7 @@ def categorize_phq9(score: int) -> str:
     (4, "Minimal"),
     (5, "Mild"),
     (9, "Mild"),
-    (10, "Moderate"),  # seeded bug: often misclassified
+    (10, "Moderate"),  
     (14, "Moderate"),
     (15, "Moderately Severe"),
     (19, "Moderately Severe"),
@@ -26,3 +26,16 @@ def categorize_phq9(score: int) -> str:
 ])
 def test_phq9_categories(score, expected):
     assert categorize_phq9(score) == expected
+    
+def test_phq9_invalid_scores():
+    with pytest.raises(ValueError):
+        categorize_phq9(-1)
+    with pytest.raises(ValueError):
+        categorize_phq9(28)
+    with pytest.raises(TypeError):
+        categorize_phq9("ten")
+    with pytest.raises(TypeError):
+        categorize_phq9(None)
+    with pytest.raises(TypeError):
+        categorize_phq9(5.5)
+
