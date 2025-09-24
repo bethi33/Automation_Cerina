@@ -10,7 +10,6 @@ class MockApp:
 
     def set_online(self):
         self.online = True
-        # sync deduplicated entries
         self.entries = list(dict.fromkeys(self.entries))
 
     def submit_mood(self, mood, note):
@@ -20,13 +19,24 @@ class MockApp:
 def test_mood_checkin_offline_sync():
     app = MockApp()
 
-    # step 1: offline mode
     app.set_offline()
     app.submit_mood(5, "Feeling great")
 
-    # step 2: app relaunch + go online
     app.set_online()
 
-    # step 3: verify sync has one entry, no duplicates
     assert len(app.entries) == 1
     assert app.entries[0] == (5, "Feeling great")
+
+def test_mood_checkin_duplicate_prevention():
+    app = MockApp()
+
+    app.set_offline()
+    app.submit_mood(3, "Okay")
+    app.submit_mood(3, "Okay") 
+
+    app.set_online()
+
+    assert len(app.entries) == 1
+    assert app.entries[0] == (3, "Okay")
+
+
