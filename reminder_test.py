@@ -4,9 +4,9 @@ from datetime import datetime
 def format_reminder_time(time_str: str, locale: str) -> str:
     dt = datetime.strptime(time_str, "%H:%M")
     if locale == "en-GB":
-        return dt.strftime("%H:%M")   # 24h format
+        return dt.strftime("%H:%M")  
     elif locale == "en-US":
-        return dt.strftime("%I:%M %p").lstrip("0")  # 12h format
+        return dt.strftime("%I:%M %p").lstrip("0")  
     else:
         return time_str
 
@@ -26,3 +26,17 @@ def test_reminder_time_formatting(time_str, locale, expected):
 ])
 def test_reminder_time_formatting_midnight_noon(time_str, locale, expected):
     assert format_reminder_time(time_str, locale) == expected
+
+def test_reminder_time_formatting_invalid_locale():
+    assert format_reminder_time("20:00", "fr-FR") == "20:00"  
+def test_reminder_time_formatting_invalid_time():
+    with pytest.raises(ValueError):
+        format_reminder_time("25:00", "en-GB")
+    with pytest.raises(ValueError):
+        format_reminder_time("ab:cd", "en-US")
+    with pytest.raises(ValueError):
+        format_reminder_time("1234", "en-GB")
+    with pytest.raises(ValueError):
+        format_reminder_time("", "en-US")
+    with pytest.raises(ValueError):
+        format_reminder_time(None, "en-GB")
